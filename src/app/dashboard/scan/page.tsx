@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { TbCamera, TbUpload, TbArrowRight, TbCameraOff, TbRefresh, TbCameraRotate } from 'react-icons/tb';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
+import { PredictionResult, PredictionResultCard } from '@/components/prediction/PredictionResult';
 import Image from 'next/image';
 
 export default function ScanPage() {
@@ -13,6 +14,7 @@ export default function ScanPage() {
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isCameraSupported, setIsCameraSupported] = useState(true);
+  const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -264,18 +266,38 @@ export default function ScanPage() {
     if (capturedImage) {
       setIsAnalyzing(true);
       
-      // This will be replaced with real API call to your disease detection backend
-      // For now we're simulating an analysis process with a timer
+      // In a real implementation, you would upload the image to your backend API
+      // For example:
+      // const formData = new FormData();
+      // formData.append('image', capturedImage);
+      // const response = await fetch('your-api-endpoint', { method: 'POST', body: formData });
+      // const result = await response.json();
       
-      // For demonstration, we could redirect to a results page
-      // but for now we'll just show the scanning animation
+      // For now we're simulating an API call with a timer
       setTimeout(() => {
+        const mockResult: PredictionResult = {
+          "class_id": 8,
+          "class_name": "Tomato___Septoria_leaf_spot",
+          "confidence": 0.5770725011825562,
+          "plant_type": "Tomato",
+          "condition": "Septoria leaf spot",
+          "display_name": "Tomato - Septoria leaf spot",
+          "advice": "TREATMENT:\n**\n\nSeptoria leaf spot is a fungal disease, and early intervention is key to managing it.\n\n*   **Organic/Natural Remedies:**\n\n    *   **Pruning:** Immediately remove and destroy (burn or dispose of in the trash, *not* compost) any leaves showing signs of infection. This is crucial to reduce the fungal load. Prune lower leaves first, as they are often the first to be affected due to soil splash.\n    *   **Baking Soda Spray:** A baking soda solution can help raise the pH on the leaf surface, making it less hospitable to the fungus. Mix 1 tablespoon of baking soda with 1 teaspoon of liquid dish soap (not detergent) in 1 gallon of water. Spray thoroughly, covering all leaf surfaces, including the undersides. Apply every 7-10 days. *Note: Baking soda can sometimes cause leaf burn, so test on a small area first.*\n    *   **Copper Fungicides (Organic Options):** Copper-based fungicides are a common organic treatment. Look for products containing copper octanoate or copper sulfate. Follow the label instructions carefully for mixing and application rates.\n\n*   **Chemical Treatments (If Appropriate):**\n\n    *   **Chlorothalonil:** A broad-spectrum fungicide that is effective against Septoria leaf spot.\n    *   **Mancozeb:** Another broad-spectrum fungicide.\n\n**\n\nPREVENTION:\n**\n\nPrevention is crucial to minimizing the impact of Septoria leaf spot.\n\n*   **Crop Rotation:** Avoid planting tomatoes in the same location year after year.\n*   **Spacing:** Provide adequate spacing between plants for better air circulation.\n\nADDITIONAL INFORMATION:\nNo additional information was provided.",
+          "user_id": "69647e40-60d4-4aca-b529-cef0f1ce9270",
+          "prediction_id": "48815aa1-9805-4d8c-86b1-fbdfee638407",
+          "timestamp": new Date().toISOString(),
+          "image_path": "6825ad254eeef8e8b3a822ce",
+          "created_at": { "$date": new Date().toISOString() },
+          "storage_type": "gridfs",
+          "_id": { "$oid": "6825ad254eeef8e8b3a822d0" }
+        };
+        
         setIsAnalyzing(false);
-        // After a real implementation, you would navigate to results:
-        // window.location.href = '/dashboard/results/12345';
-        // Or use Next.js router:
-        // router.push('/dashboard/results/12345');
-      }, 5000); // Longer duration to better show the scanning animation
+        setPredictionResult(mockResult);
+        
+        // In a real app with navigation, you might do:
+        // router.push(`/dashboard/results?id=${mockResult.prediction_id}`);
+      }, 3000);
     }
   };
 
@@ -298,7 +320,40 @@ export default function ScanPage() {
       {/* Hidden canvas for capturing snapshots */}
       <canvas ref={canvasRef} className="hidden"></canvas>
       
-      {capturedImage ? (
+      {/* Show prediction result if available */}
+      {predictionResult ? (
+        <div className="flex flex-col">
+          <PredictionResultCard
+            prediction={predictionResult}
+            imageUrl={capturedImage || undefined}
+            onSave={() => {
+              alert("Result saved! In a real app, this would save to your history.");
+              // In real app: await saveToHistory(predictionResult);
+            }}
+            onShare={() => {
+              alert("Sharing functionality would open here");
+              // In real app: Implement sharing via navigator.share or custom UI
+            }}
+            onClose={() => {
+              // Reset everything to start over
+              setPredictionResult(null);
+              setCapturedImage(null);
+            }}
+          />
+          
+          <div className="flex justify-center mt-4">
+            <Button 
+              onClick={() => {
+                setPredictionResult(null);
+                setCapturedImage(null);
+              }}
+              className="mx-auto"
+            >
+              Scan Another Plant
+            </Button>
+          </div>
+        </div>
+      ) : capturedImage ? (
         <div className="flex flex-col items-center">
           {/* Image Preview */}
           <div className="w-full h-[65vh] max-h-[500px] relative mb-4 rounded-lg overflow-hidden shadow-lg border border-gray-200">

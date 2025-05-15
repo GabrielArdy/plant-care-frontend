@@ -21,7 +21,7 @@ export async function fetchUserProfile(): Promise<UserProfile> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Mock response data (for development)
+    // Mock response data that matches the example payload
     const mockResponse: ApiResponse<UserProfile> = {
       message: "Profile retrieved successfully",
       data: {
@@ -32,7 +32,7 @@ export async function fetchUserProfile(): Promise<UserProfile> {
         last_name: "Doe",
         avatar: null,
         cover_image: null,
-        description: "Plant enthusiast and hobbyist gardener. Looking to identify plant diseases and keep my garden healthy."
+        description: null
       }
     };
     

@@ -232,6 +232,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             id="email"
             type="email"
             value={profile.email}
+            onChange={() => {}} // No-op handler for disabled input
             disabled
             className="bg-gray-50 cursor-not-allowed"
           />

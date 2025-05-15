@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --background: #f8faf8;
+  --secondary: #4ade80;
+  --foreground: #1c1917;
+  --card-background: #ffffff;
+  --input-background: #ffffff;
+  --border-color: #e2e8f0;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* Remove dark mode auto-switching */
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --secondary: #22c55e;
+    --foreground: #f5f5f4;
   }
+} 
+*/
+
+html {
+  font-size: 16px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Mobile optimizations */
+input,
+button,
+select,
+textarea {
+  font-size: 16px; /* Prevents zoom on focus in iOS */
+}
+
+/* Better contrast for links and buttons */
+.text-green {
+  color: #22a861 !important; /* Darker green for better contrast */
+}
+
+.btn-primary, 
+.bg-green {
+  background-color: #22a861 !important; /* Darker green for better contrast */
+}
+
+/* Card improvements */
+.card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Plant Scanner animations */
+@keyframes scan-vertical {
+  0% { top: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  48% { top: calc(100% - 4px); box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  50% { top: calc(100% - 4px); box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  98% { top: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  100% { top: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+}
+
+@keyframes scan-horizontal {
+  0% { left: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  48% { left: calc(100% - 4px); box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  50% { left: calc(100% - 4px); box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  98% { left: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+  100% { left: 0; box-shadow: 0 0 10px 2px rgba(34, 168, 97, 0.7); }
+}
+
+@keyframes scanning-flash {
+  0% { opacity: 0; }
+  20% { opacity: 0.2; }
+  40% { opacity: 0.1; }
+  60% { opacity: 0.3; }
+  80% { opacity: 0.1; }
+  100% { opacity: 0; }
+}
+
+.animate-scan-vertical {
+  animation: scan-vertical 4s ease-in-out infinite;
+}
+
+.animate-scan-horizontal {
+  animation: scan-horizontal 3s ease-in-out infinite;
+}
+
+.animate-scanning-flash {
+  animation: scanning-flash 2s ease-in-out infinite;
 }
